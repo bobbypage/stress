@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/golang/glog"
-	"k8s.io/kubernetes/pkg/api/resource"
+	"k8s.io/apimachinery/pkg/api/resource"
+	"k8s.io/klog/v2"
 )
 
 var (
@@ -23,24 +23,24 @@ func main() {
 	flag.Parse()
 	total := resource.MustParse(*argMemTotal)
 	stepSize := resource.MustParse(*argMemStepSize)
-	glog.Infof("Allocating %q memory, in %q chunks, with a %v sleep between allocations", total.String(), stepSize.String(), *argMemSleepDuration)
+	klog.Infof("Allocating %q memory, in %q chunks, with a %v sleep between allocations", total.String(), stepSize.String(), *argMemSleepDuration)
 	burnCPU()
 	allocateMemory(total, stepSize)
-	glog.Infof("Allocated %q memory", total.String())
+	klog.Infof("Allocated %q memory", total.String())
 	select {}
 }
 
 func burnCPU() {
 	src, err := os.Open("/dev/zero")
 	if err != nil {
-		glog.Fatalf("failed to open /dev/zero")
+		klog.Fatalf("failed to open /dev/zero")
 	}
 	for i := 0; i < *argCpus; i++ {
-		glog.Infof("Spawning a thread to consume CPU")
+		klog.Infof("Spawning a thread to consume CPU")
 		go func() {
 			_, err := io.Copy(ioutil.Discard, src)
 			if err != nil {
-				glog.Fatalf("failed to copy from /dev/zero to /dev/null: %v", err)
+				klog.Fatalf("failed to copy from /dev/zero to /dev/null: %v", err)
 			}
 		}()
 	}
