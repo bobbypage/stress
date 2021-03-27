@@ -1,26 +1,26 @@
 package main
 
 import (
-	"flag"
 	"io"
 	"io/ioutil"
 	"os"
 	"time"
 
+	"github.com/spf13/pflag"
 	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/klog/v2"
 )
 
 var (
-	argMemTotal         = flag.String("mem-total", "0", "total memory to be consumed. Memory will be consumed via multiple allocations.")
-	argMemStepSize      = flag.String("mem-alloc-size", "4Ki", "amount of memory to be consumed in each allocation")
-	argMemSleepDuration = flag.Duration("mem-alloc-sleep", time.Millisecond, "duration to sleep between allocations")
-	argCpus             = flag.Int("cpus", 0, "total number of CPUs to utilize")
+	argMemTotal         = pflag.String("mem-total", "0", "total memory to be consumed. Memory will be consumed via multiple allocations.")
+	argMemStepSize      = pflag.String("mem-alloc-size", "4Ki", "amount of memory to be consumed in each allocation")
+	argMemSleepDuration = pflag.Duration("mem-alloc-sleep", time.Millisecond, "duration to sleep between allocations")
+	argCpus             = pflag.Int("cpus", 0, "total number of CPUs to utilize")
 	buffer              [][]byte
 )
 
 func main() {
-	flag.Parse()
+	pflag.Parse()
 	total := resource.MustParse(*argMemTotal)
 	stepSize := resource.MustParse(*argMemStepSize)
 	klog.Infof("Allocating %q memory, in %q chunks, with a %v sleep between allocations", total.String(), stepSize.String(), *argMemSleepDuration)
