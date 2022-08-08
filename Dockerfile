@@ -1,6 +1,5 @@
-FROM scratch
-MAINTAINER vishnuk@google.com
+FROM alpine
 
 ADD stress /
 
-ENTRYPOINT ["/stress", "-logtostderr"]
+ENTRYPOINT ["/stress"]
