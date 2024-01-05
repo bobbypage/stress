@@ -1,9 +1,6 @@
 package main
 
 import (
-	"io"
-	"io/ioutil"
-	"os"
 	"time"
 
 	"github.com/spf13/pflag"
@@ -31,16 +28,13 @@ func main() {
 }
 
 func burnCPU() {
-	src, err := os.Open("/dev/zero")
-	if err != nil {
-		klog.Fatalf("failed to open /dev/zero")
-	}
 	for i := 0; i < *argCpus; i++ {
 		klog.Infof("Spawning a thread to consume CPU")
 		go func() {
-			_, err := io.Copy(ioutil.Discard, src)
-			if err != nil {
-				klog.Fatalf("failed to copy from /dev/zero to /dev/null: %v", err)
+			for {
+				select {
+				default:
+				}
 			}
 		}()
 	}
